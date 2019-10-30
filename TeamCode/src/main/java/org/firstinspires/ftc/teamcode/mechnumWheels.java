@@ -3,12 +3,14 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 @TeleOp(name="MechnumWheels", group="DriveModes")
 public class mechnumWheels extends OpMode {
     private DcMotor frontRight, frontLeft, backRight, backLeft;
+    private Servo serLeft, serRight;
     private double x, x2, y, power;
     private double frontRightPower, frontLeftPower, backRightPower, backLeftPower;
     double theta = 0.0;
@@ -21,6 +23,8 @@ public class mechnumWheels extends OpMode {
         frontLeftPower = 0.0;
         backRightPower = 0.0;
         backLeftPower = 0.0;
+        serLeft = hardwareMap.servo.get("SL");
+        serRight = hardwareMap.servo.get("SR");
         frontRight = hardwareMap.dcMotor.get("FR");
         frontLeft = hardwareMap.dcMotor.get("FL");
         backRight = hardwareMap.dcMotor.get("BR");
