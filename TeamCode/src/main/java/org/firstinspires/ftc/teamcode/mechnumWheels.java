@@ -16,7 +16,7 @@ public class mechnumWheels extends OpMode {
     private boolean servoOpen;//Instantiating a boolean that will be used for the collection system
     private int count;//Instantiating a count that will be used for the collection system
 
-    private double x, x2, y, power;//Instantiating the vars that will be used for the power and direction of the DcMotors
+    private double x, x2, y, power, power2;//Instantiating the vars that will be used for the power and direction of the DcMotors
     private double frontRightPower, frontLeftPower, backRightPower, backLeftPower;//Instantiating the different power vars for the different DcMotors
 
     /**
@@ -37,10 +37,18 @@ public class mechnumWheels extends OpMode {
         serRight = hardwareMap.servo.get("SR");
 
         //Setting the other vars that will be needed for the collection system to their default values
-        servoOpen = true;
+        servoOpen = false;
+        if(servoOpen){
+            serLeft.setPosition(0.00000);
+            serRight.setPosition(1.0000);
+        }
+        else{
+            serLeft.setPosition(1.0000);
+            serRight.setPosition(0.000);
+        }
         count = 0;
 
-        /*
+        ///*
 
         //Setting all of the DcMotors the their current state by talking to the expansion hub
         frontRight = hardwareMap.dcMotor.get("FR");
@@ -59,8 +67,18 @@ public class mechnumWheels extends OpMode {
         x = gamepad1.left_stick_x;//Setting the x var to the current state of the gamepad1 left stick x value (this is the robots horizontal movement)
         x2 = gamepad1.right_stick_x;//Setting the x2 var to the current state of the gamepad1 right stick x value (this is the robots rotational movement)
         y = -1*gamepad1.left_stick_y;//Setting the y var to the current state of the gamepad1 left stick y value (this is the robots vertical movement)
-        power = Math.sqrt(Math.pow(x, 2)+Math.pow(y, 2));//Setting the power var to the magnitude of the x and y vector (this is the speed of the robot)
-        power = (gamepad1.right_bumper)? power/2 : power;//Setting the power to either normal speed or half speed based on the gamepad1 right bumper
+
+        power = Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2));//Setting the power var to the magnitude of the x and y vector (this is the speed of the robot)
+        power = Math.pow(power, 2);
+
+        power2 = Math.sqrt(Math.pow(x2, 2));//Setting the power var to the magnitude of the x and y vector (this is the speed of the robot)
+        power2 = Math.pow(power2, 2);
+
+        //Setting the power to either normal speed or half speed based on the gamepad1 right bumper
+        if(gamepad1.left_bumper){
+            power /= 2;
+            power2 /= 2;
+        }
 
         //region PickUp Mechanism
 
@@ -92,19 +110,19 @@ public class mechnumWheels extends OpMode {
 
         //region Drive Mechanism
 
-        /*
+        ///*
 
         //Setting the different motors to their respective power for lateral movement
-        frontLeft.setPower(power*(x+y));
-        frontRight.setPower(power*(x-y));
-        backLeft.setPower(power*(-x+y));
-        backRight.setPower(power*(-x-y));
+        frontLeft.setPower(power * ( x + y ) );
+        frontRight.setPower(power * ( x - y ) );
+        backLeft.setPower(power * ( - x + y ) );
+        backRight.setPower(power * ( - x - y ) );
 
         //Setting different motors to their respective power for rotational movement
-        frontLeft.setPower(-x2);
-        frontRight.setPower(-x2);
-        backLeft.setPower(-x2);
-        backRight.setPower(-x2);
+        frontLeft.setPower(power2 * -x2);
+        frontRight.setPower(power2 * -x2);
+        backLeft.setPower(power2 * -x2);
+        backRight.setPower(power2 * -x2);
 
         //*/
 
@@ -118,10 +136,10 @@ public class mechnumWheels extends OpMode {
         telemetry.addData("Servo Open: ", servoOpen);
 
         //Displaying all of the different motor powers to the Driver Controller
-        telemetry.addData("FR PWR", power*(-x+y));
-        telemetry.addData("BR PWR", power*-(y+x));
-        telemetry.addData("FL PWR", power*(y+x));
-        telemetry.addData("BL PWR", power*(-x+y));
+        telemetry.addData("FR PWR", power * ( - x + y ) );
+        telemetry.addData("BR PWR", power * - ( y + x ) );
+        telemetry.addData("FL PWR", power * ( y + x ) );
+        telemetry.addData("BL PWR", power * ( - x + y ) );
         //endregion
     }
 }
