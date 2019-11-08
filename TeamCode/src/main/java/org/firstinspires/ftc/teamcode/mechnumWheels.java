@@ -38,14 +38,8 @@ public class mechnumWheels extends OpMode {
 
         //Setting the other vars that will be needed for the collection system to their default values
         servoOpen = false;
-        if(servoOpen){
-            serLeft.setPosition(0.00000);
-            serRight.setPosition(1.0000);
-        }
-        else{
-            serLeft.setPosition(1.0000);
-            serRight.setPosition(0.000);
-        }
+        serLeft.setPosition(1.0000);
+        serRight.setPosition(0.000);
         count = 0;
 
         ///*
