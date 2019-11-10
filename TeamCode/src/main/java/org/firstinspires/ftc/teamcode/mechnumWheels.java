@@ -68,7 +68,7 @@ public class mechnumWheels extends OpMode {
         power2 = Math.sqrt(Math.pow(x2, 2));//Setting the power var to the magnitude of the x and y vector (this is the speed of the robot)
         power2 = Math.pow(power2, 2);
 
-        //Setting the power to either normal speed or half speed based on the gamepad1 right bumper
+        //Setting the power and power2 to either normal speed or half speed based on the gamepad1 right bumper
         if(gamepad1.left_bumper){
             power /= 2;
             power2 /= 2;
