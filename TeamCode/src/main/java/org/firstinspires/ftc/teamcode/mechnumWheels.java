@@ -71,13 +71,13 @@ public class mechnumWheels extends OpMode {
         // TODO: 11/20/2019 fiddle around with the numbers below to find something that works well
         //Setting the power and power2 to either normal speed or half speed based on the gamepad1 right bumper
         if(gamepad1.left_bumper){
-            power /= 3;
-            power2 /= 3;
+            power /= 2;
+            power2 /= 2;
         }
 
         if(gamepad1.right_bumper){
-            power /= 6;
-            power2 /= 6;
+            power /= 3;
+            power2 /= 3;
         }
 
         //region PickUp Mechanism
