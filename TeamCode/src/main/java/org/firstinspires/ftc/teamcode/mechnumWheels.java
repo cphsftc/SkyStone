@@ -16,7 +16,7 @@ public class mechnumWheels extends OpMode {
     private boolean servoOpen;//Instantiating a boolean that will be used for the collection system
     private int count;//Instantiating a count that will be used for the collection system
 
-    private double x, x2, y, power, power2;//Instantiating the vars that will be used for the power and direction of the DcMotors
+    private double x, x2, y, y2, power, power2;//Instantiating the vars that will be used for the power and direction of the DcMotors
     private double frontRightPower, frontLeftPower, backRightPower, backLeftPower;//Instantiating the different power vars for the different DcMotors
 
     /**
@@ -60,7 +60,7 @@ public class mechnumWheels extends OpMode {
     public void loop() {
         x = gamepad1.left_stick_x;//Setting the x var to the current state of the gamepad1 left stick x value (this is the robots horizontal movement)
         x2 = gamepad1.right_stick_x;//Setting the x2 var to the current state of the gamepad1 right stick x value (this is the robots rotational movement)
-        y = -1*gamepad1.left_stick_y;//Setting the y var to the current state of the gamepad1 left stick y value (this is the robots vertical movement)
+        y = -gamepad1.left_stick_y;//Setting the y var to the current state of the gamepad1 left stick y value (this is the robots vertical movement)
 
         power = Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2));//Setting the power var to the magnitude of the x and y vector (this is the speed of the robot)
         power = Math.pow(power, 2);
@@ -68,10 +68,16 @@ public class mechnumWheels extends OpMode {
         power2 = Math.sqrt(Math.pow(x2, 2));//Setting the power var to the magnitude of the x and y vector (this is the speed of the robot)
         power2 = Math.pow(power2, 2);
 
+        // TODO: 11/20/2019 fiddle around with the numbers below to find something that works well
         //Setting the power and power2 to either normal speed or half speed based on the gamepad1 right bumper
         if(gamepad1.left_bumper){
-            power /= 2;
-            power2 /= 2;
+            power /= 3;
+            power2 /= 3;
+        }
+
+        if(gamepad1.right_bumper){
+            power /= 6;
+            power2 /= 6;
         }
 
         //region PickUp Mechanism
