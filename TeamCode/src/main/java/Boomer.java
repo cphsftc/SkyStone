@@ -26,11 +26,30 @@ public class Boomer extends OpMode {
 
     @Override
     public void loop() {
+        x = gamepad1.left_stick_x;//Setting the x var to the current state of the gamepad1 left stick x value (this is the robots horizontal movement)
+        x2 = gamepad1.right_stick_x;//Setting the x2 var to the current state of the gamepad1 right stick x value (this is the robots rotational movement)
+        y = -gamepad1.left_stick_y;//Setting the y var to the current state of the gamepad1 left stick y value (this is the robots vertical movement)
+
+        power = 1;
+        power2 = 1;
+
+        // TODO: 11/20/2019 fiddle around with the numbers below to find something that works well
+        //Setting the power and power2 to either normal speed or half speed based on the gamepad1 right bumper
+        if(gamepad1.left_bumper){
+            power /= 2;
+            power2 /= 2;
+        }
+
+        if(gamepad1.right_bumper){
+            power /= 3;
+            power2 /= 3;
+        }
+
         //Setting the different motors to their respective power for lateral movement
-        frontLeft.setPower(power * ( x + y ) );
-        frontRight.setPower(power * ( x - y ) );
-        backLeft.setPower(power * ( - x + y ) );
-        backRight.setPower(power * ( - x - y ) );
+        frontLeft.setPower(power * ( x - y ) );
+        frontRight.setPower(power * ( x + y ) );
+        backLeft.setPower(power * ( - x - y ) );
+        backRight.setPower(power * ( - x + y ) );
 
         //Setting different motors to their respective power for rotational movement
         frontLeft.setPower(power2 * -x2);
