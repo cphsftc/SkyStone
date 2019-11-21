@@ -52,11 +52,19 @@ public class Vector_Auto extends LinearOpMode {
         backLeft = hardwareMap.dcMotor.get("BL");
         //*/
 
+        power = 1;
+        power2 = 1;
+
         waitForStart();
         servoOpen = false;
         runtime.reset();
-        while (opModeIsActive()){
-            servoOpen = !servoOpen;
+
+        for (int i = 0 ;; i++){
+
+            if(!opModeIsActive()){
+                break;
+            }
+            y = -1;
 
             if(servoOpen){
                 serLeft.setPosition(0.00000);
@@ -80,8 +88,8 @@ public class Vector_Auto extends LinearOpMode {
             backRight.setPower(power2 * -x2);
 
             //*/
-
-            sleep(1000);
+            sleep(10);
+            while (i > 10 * 1000);
         }
     }
 }
