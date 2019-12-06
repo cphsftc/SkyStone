@@ -1,21 +1,20 @@
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.Servo;
 
 @TeleOp(name="Boomer", group="DriveModes")
 
 public class Boomer extends OpMode {
 
     private double x, x2, y, y2, power, power2, aliPower;//Instantiating the vars that will be used for the power and direction of the DcMotors
-    private DcMotor frontRight, frontLeft, backRight, backLeft, ali;//Instantiating the DcMotors for the wheels
+    private DcMotor frontRight, frontLeft, backRight, backLeft, ali;//Instantiating the DcMotors for the
+    private Servo leftArm, rightArm;
+    private int count;
+    private boolean armsOpen;
 
     @Override
     public void init() {
-
-        //Setting the x and y vars to the default value of 0.0
-        x = 0.0;
-        y = 0.0;
-        aliPower = 0;
 
         //Setting all of the DcMotors the their current state by talking to the expansion hub
         frontRight = hardwareMap.dcMotor.get("FR");//1 - hub2
@@ -23,6 +22,19 @@ public class Boomer extends OpMode {
         backRight = hardwareMap.dcMotor.get("BR");//2 - hub2
         backLeft = hardwareMap.dcMotor.get("BL");//3 - hub2
         ali = hardwareMap.dcMotor.get("ALI");//0 - hub1
+        leftArm = hardwareMap.servo.get("LEFTARM");//0 - hub1
+        rightArm = hardwareMap.servo.get("RIGHTARM");//1 - hub1
+
+        //Setting the x and y vars to the default value of 0.0
+        x = 0.0;
+        y = 0.0;
+        aliPower = 0;
+
+        //Setting the other vars that will be needed for the collection system to their default values
+        armsOpen = false;
+        leftArm.setPosition(1.0000);
+        rightArm.setPosition(0.000);
+        count = 0;
 
     }
 
@@ -50,6 +62,32 @@ public class Boomer extends OpMode {
         aliPower = 0;
         aliPower += gamepad1.right_trigger;
         aliPower -= gamepad1.left_trigger;
+
+        //Count makes sure that the 'a' button can be held down and the servos will not spas out
+        if(count < 0) count = 0;
+
+        //Opens the servo if the 'a' button is pressed on gamepad1
+        if(gamepad1.a){
+            if(count==0) {
+                armsOpen = !armsOpen;
+            }
+            count=2;
+
+        }
+
+        //Sets the servo positions based on if they should be open or closed (the servoOpen var)
+        if(armsOpen){
+            leftArm.setPosition(0.00000);
+            rightArm.setPosition(1.0000);
+        }
+        else{
+            leftArm.setPosition(1.0000);
+            rightArm.setPosition(0.000);
+        }
+
+        //count must decrease so that we can change the servos after they have been pressed once
+        count--;
+        //endregion
 
         //Setting the different motors to their respective power for lateral movement
         frontLeft.setPower(power * ( x - y ) );
