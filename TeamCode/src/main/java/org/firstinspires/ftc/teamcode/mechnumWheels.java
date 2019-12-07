@@ -59,7 +59,7 @@ public class mechnumWheels extends OpMode {
     public void loop() {
         x = gamepad1.left_stick_x;//Setting the x var to the current state of the gamepad1 left stick x value (this is the robots horizontal movement)
         x2 = gamepad1.right_stick_x;//Setting the x2 var to the current state of the gamepad1 right stick x value (this is the robots rotational movement)
-        y = -gamepad1.left_stick_y;//Setting the y var to the current state of the gamepad1 left stick y value (this is the robots vertical movement)
+        y = gamepad1.left_stick_y;//Setting the y var to the current state of the gamepad1 left stick y value (this is the robots vertical movement)
 
         power = Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2));//Setting the power var to the magnitude of the x and y vector (this is the speed of the robot)
         power = Math.pow(power, 2);

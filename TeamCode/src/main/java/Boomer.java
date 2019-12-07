@@ -10,8 +10,8 @@ public class Boomer extends OpMode {
     private double x, x2, y, y2, power, power2, aliPower, liftPower;//Instantiating the vars that will be used for the power and direction of the DcMotors
     private DcMotor frontRight, frontLeft, backRight, backLeft, ali, elevator;//Instantiating the DcMotors for the
     private Servo leftArm, rightArm, claw;
-    private int count;
-    private boolean armsOpen, clawMoved;
+    private int count, clawCount;
+    private boolean armsOpen, clawUp;
 
     @Override
     public void init() {
@@ -35,7 +35,7 @@ public class Boomer extends OpMode {
 
         //Starting the claw at the up position
         claw.setPosition(1);
-        clawMoved = false;
+        clawUp = false;
 
         //Setting the other vars that will be needed for the collection system to their default values
         armsOpen = false;
@@ -47,11 +47,15 @@ public class Boomer extends OpMode {
 
     @Override
     public void loop() {
-        elevator.setPower(0);
-        if(!clawMoved){
-            claw.setPosition(0);
-            clawMoved = true;
+
+        if(gamepad1.dpad_up && gamepad1.start){
+            try {
+                testArms(300);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
+        elevator.setPower(0);
 
         /*liftPower = 0;
         if(gamepad1.b){
@@ -60,9 +64,6 @@ public class Boomer extends OpMode {
         if(gamepad1.x){
             liftPower-=.01;
         }*/
-        liftPower = 0;
-        liftPower += gamepad2.right_trigger;
-        liftPower -= gamepad2.left_trigger;
 
         x = gamepad1.left_stick_x;//Setting the x var to the current state of the gamepad1 left stick x value (this is the robots horizontal movement)
         x2 = gamepad1.right_stick_x;//Setting the x2 var to the current state of the gamepad1 right stick x value (this is the robots rotational movement)
@@ -71,7 +72,6 @@ public class Boomer extends OpMode {
         power = 1;
         power2 = 1;
 
-        // TODO: 11/20/2019 fiddle around with the numbers below to find something that works well
         //Setting the power and power2 to either normal speed or half speed based on the gamepad1 right bumper
         if(gamepad1.left_bumper){
             power /= 2;
@@ -86,6 +86,10 @@ public class Boomer extends OpMode {
         aliPower = 0;
         aliPower += gamepad1.right_trigger;
         aliPower -= gamepad1.left_trigger;
+
+        liftPower = 0;
+        if(gamepad1.left_bumper) liftPower += .5;
+        if(gamepad1.right_bumper) liftPower -= .5;
 
         //Count makes sure that the 'a' button can be held down and the servos will not spas out
         if(count < 0) count = 0;
@@ -111,7 +115,23 @@ public class Boomer extends OpMode {
 
         //count must decrease so that we can change the servos after they have been pressed once
         count--;
-        //endregion
+
+        if(clawCount < 0) clawCount = 0;
+
+        if(gamepad1.y){
+            if(clawCount == 0){
+                clawUp = !clawUp;
+            }
+
+            clawCount = 2;
+        }
+
+        clawCount--;
+
+        if(clawUp){
+            claw.setPosition(0);
+        }
+        else claw.setPosition(1);
 
         //Setting the different motors to their respective power for lateral movement
         frontLeft.setPower(power * ( x - y ) );
@@ -137,7 +157,24 @@ public class Boomer extends OpMode {
         telemetry.addData("BR PWR", power * ( - x + y ) );
         telemetry.addData("ALI PWR", aliPower );
         telemetry.addData("ELEVATOR PWR", liftPower);
+        telemetry.addData("CLAW UP", clawUp);
         //endregion
+    }
+
+    public void testArms(int waitTime) throws InterruptedException {
+        for (int i = 0; i < 3; i++) {
+            claw.setPosition(1);
+            Thread.sleep(waitTime);
+            leftArm.setPosition(1.0000);
+            rightArm.setPosition(0.000);
+            Thread.sleep(waitTime);
+            claw.setPosition(0);
+            Thread.sleep(waitTime);
+            leftArm.setPosition(0.00000);
+            rightArm.setPosition(1.0000);
+            Thread.sleep(waitTime);
+        }
+
     }
 
 }
