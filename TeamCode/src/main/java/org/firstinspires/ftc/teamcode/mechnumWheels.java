@@ -28,7 +28,6 @@ public class mechnumWheels extends OpMode {
         //Setting the x and y vars to the default value of 0.0
         x = 0.0;
         y = 0.0;
-
         //Setting all of the power vars to the default value of 0.0
         frontRightPower = frontLeftPower = backRightPower = backLeftPower = 0.0;
 

@@ -7,11 +7,11 @@ import com.qualcomm.robotcore.hardware.Servo;
 
 public class Boomer extends OpMode {
 
-    private double x, x2, y, y2, power, power2, aliPower;//Instantiating the vars that will be used for the power and direction of the DcMotors
-    private DcMotor frontRight, frontLeft, backRight, backLeft, ali;//Instantiating the DcMotors for the
-    private Servo leftArm, rightArm;
+    private double x, x2, y, y2, power, power2, aliPower, liftPower;//Instantiating the vars that will be used for the power and direction of the DcMotors
+    private DcMotor frontRight, frontLeft, backRight, backLeft, ali, elevator;//Instantiating the DcMotors for the
+    private Servo leftArm, rightArm, claw;
     private int count;
-    private boolean armsOpen;
+    private boolean armsOpen, clawMoved;
 
     @Override
     public void init() {
@@ -22,13 +22,20 @@ public class Boomer extends OpMode {
         backRight = hardwareMap.dcMotor.get("BR");//2 - hub2
         backLeft = hardwareMap.dcMotor.get("BL");//3 - hub2
         ali = hardwareMap.dcMotor.get("ALI");//0 - hub1
+        elevator = hardwareMap.dcMotor.get("LIFT");//2 - hub1
         leftArm = hardwareMap.servo.get("LEFTARM");//0 - hub1
         rightArm = hardwareMap.servo.get("RIGHTARM");//1 - hub1
+        claw = hardwareMap.servo.get("CLAW");//3 - hub1
 
         //Setting the x and y vars to the default value of 0.0
         x = 0.0;
         y = 0.0;
         aliPower = 0;
+        liftPower = 0;
+
+        //Starting the claw at the up position
+        claw.setPosition(1);
+        clawMoved = false;
 
         //Setting the other vars that will be needed for the collection system to their default values
         armsOpen = false;
@@ -40,6 +47,23 @@ public class Boomer extends OpMode {
 
     @Override
     public void loop() {
+        elevator.setPower(0);
+        if(!clawMoved){
+            claw.setPosition(0);
+            clawMoved = true;
+        }
+
+        /*liftPower = 0;
+        if(gamepad1.b){
+            liftPower+=.01;
+        }
+        if(gamepad1.x){
+            liftPower-=.01;
+        }*/
+        liftPower = 0;
+        liftPower += gamepad2.right_trigger;
+        liftPower -= gamepad2.left_trigger;
+
         x = gamepad1.left_stick_x;//Setting the x var to the current state of the gamepad1 left stick x value (this is the robots horizontal movement)
         x2 = gamepad1.right_stick_x;//Setting the x2 var to the current state of the gamepad1 right stick x value (this is the robots rotational movement)
         y = -gamepad1.left_stick_y;//Setting the y var to the current state of the gamepad1 left stick y value (this is the robots vertical movement)
@@ -102,6 +126,7 @@ public class Boomer extends OpMode {
         backRight.setPower(power2 * -x2);
 
         ali.setPower(aliPower);
+        elevator.setPower(liftPower);
 
         //region Telemetry Data
 
@@ -111,6 +136,7 @@ public class Boomer extends OpMode {
         telemetry.addData("BL PWR", power * ( - x - y ) );
         telemetry.addData("BR PWR", power * ( - x + y ) );
         telemetry.addData("ALI PWR", aliPower );
+        telemetry.addData("ELEVATOR PWR", liftPower);
         //endregion
     }
 
